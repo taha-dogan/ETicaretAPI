@@ -1,4 +1,5 @@
-﻿using ETicaretAPI.Application.Abstractions;
+﻿
+using ETicaretAPI.Application.Repositories;
 using ETicaretAPI.Persistence.Contexts;
 using ETicaretAPI.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -20,10 +21,19 @@ namespace ETicaretAPI.Persistence
             configurationManager.SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../../Presentation/ETicaretAPI.API"));
             configurationManager.AddJsonFile("appsettings.json");
 
+            //AddScoped için:
+            //services.AddDbContext<ETicaretAPIDbContext>(options => options.UseNpgsql(configurationManager.GetConnectionString("PostreSQL"))); //Persistence/sağ tık/ NuGet/ Npgsql.EntityFrameworkCore.PostgreSQL
 
-            services.AddDbContext<ETicaretAPIDbContext>(options => options.UseNpgsql(configurationManager.GetConnectionString("PostreSQL"))); //Persistence/sağ tık/ NuGet/ Npgsql.EntityFrameworkCore.PostgreSQL
+            //AddSingleton için:
+            services.AddDbContext<ETicaretAPIDbContext>(options => options.UseNpgsql(configurationManager.GetConnectionString("PostreSQL")), ServiceLifetime.Singleton);
 
-            //services.AddSingleton<IProductService,ProductService>();
+
+            services.AddSingleton<IProductReadRepository, ProductReadRepository>();
+            services.AddSingleton<IProductWriteRepository, ProductWriteRepository>();
+            services.AddSingleton<IOrderReadRepository, OrderReadRepository>();
+            services.AddSingleton<IOrderWriteRepository, OrderWriteRepository>();
+            services.AddSingleton<ICustomerReadRepository, CustomerReadRepository>();
+            services.AddSingleton<ICustomerWriteRepository, CustomerWriteRepository>();
         }
     }
 }

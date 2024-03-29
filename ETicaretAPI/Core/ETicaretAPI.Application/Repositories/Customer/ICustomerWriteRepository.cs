@@ -1,12 +1,14 @@
-﻿using System;
+﻿using ETicaretAPI.Application.Repositories;
+using ETicaretAPI.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ETicaretAPI.Application.Repositories.Customer
+namespace ETicaretAPI.Persistence.Repositories //namespace uymadığı için sondaki ".Customer kaldırıldı."
 {
-    internal interface ICustomerWriteRepository
+    public interface ICustomerWriteRepository : IWriteRepository<Customer>
     {
     }
 }
