@@ -29,30 +29,39 @@ namespace ETicaretAPI.Persistence.Repositories
             return entityEntry.State == EntityState.Added; //eklendiyse true dön
         }
 
-        public async Task<bool> AddRangeAsync(List<T> model)
+        public async Task<bool> AddRangeAsync(List<T> datas)
         {
-            await Table.AddRangeAsync(model); //AddRangeAsync Task döndürür ve bilgi alınamıyor demektir.
+            await Table.AddRangeAsync(datas); //AddRangeAsync Task döndürür ve bilgi alınamıyor demektir.
             return true;
         }
 
-        public Task<bool> Remove(T model)
+        public bool Remove(T model) //Silinecek olan veri direkt parametre ile geldiğinden böyle yaptık
         {
-            throw new NotImplementedException();
+            EntityEntry entityEntry = Table.Remove(model);
+            return entityEntry.State == EntityState.Deleted;
         }
 
-        public Task<bool> Remove(string id)
+        public bool RemoveRange(List<T> datas)
         {
-            throw new NotImplementedException();
+            Table.RemoveRange(datas);
+            return true;
         }
 
-        public Task<bool> UpdateAsync(T model)
-        {
-            throw new NotImplementedException();
+        public async Task<bool> RemoveAsync(string id)
+        {//ilgili veriyi önce bulmamız lazım. Sonra remove etmemiz lazım
+            T data = await Table.FirstOrDefaultAsync(p => p.Id == Guid.Parse(id)); //içerisinde async olduğundan async olarak düzenlendi.
+            return Remove(data);
         }
 
-        public Task<int> SaveAsync()
+        public bool Update(T model)
         {
-            throw new NotImplementedException();
+            EntityEntry entityEntry = Table.Update(model); //Table.Update async olmadığından metod async olmayacaktır.
+            return entityEntry.State == EntityState.Modified;
         }
+
+        public async Task<int> SaveAsync()
+            => await _context.SaveChangesAsync(); // "{ return await _context.SaveChangesAsync();}" ile "=> await _context.SaveChangesAsync();" aynıdır
+
+
     }
 }
